@@ -1,78 +1,133 @@
 import {
-    Button,
+  Button,
 
-    DatePicker,
-    Form,
-    Input,
-    InputNumber,
+  DatePicker,
+  Form,
+  Input,
+  InputNumber,
 
 
-    Switch,
+  Switch,
 
 } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import moment from 'moment';
 
-const Counter = () => {
-    const [componentSize, setComponentSize] = useState('default');
+const Counter = (props) => {
+  const [componentSize, setComponentSize] = useState('default');
+  console.log("props", props);
+  const [dataSource, setDataSource] = useState([])
+  const [searchParams, setSearchParams] = useSearchParams();
+  const Cid = parseInt(searchParams.get("q"));
 
-    const onFormLayoutChange = ({ size }) => {
-        setComponentSize(size);
-    };
+  // const staDa = {
+  //   CId: 1,
+  //   CompanyId: 1,
+  //   CounterLocation: "Ratna Park",
+  //   CounterName: "Counter 1",
+  //   // EntryDate: '',
+  //   IsActive: true
+  // }
 
-    const onFinish = (values) => {
-        console.log(values);
-    };
-    return (
-        <Form
-            onFinish={onFinish}
-            labelCol={{
-                span: 4,
-            }}
-            wrapperCol={{
-                span: 14,
-            }}
-            layout="horizontal"
-            initialValues={{
-                size: componentSize,
-            }}
-            onValuesChange={onFormLayoutChange}
-            size={componentSize}
-        >
+  useEffect(() => {
+    console.log('asdf');
+    // https://lunivacare.ddns.net/LunivaRouteAPI/LunivarouteManagementApi/GetCounterDetails
+    fetch("https://lunivacare.ddns.net/LunivaRouteAPI/LunivarouteManagementApi/GetCounterDetails ")
+      .then(res => res.json())
+      .then(
+        (result) => {
+          let res = result.CounterDetails
+          const vari = res.map((js) => {
+            if (js.CId === Cid) {
+              return js;
 
-            <Form.Item name="cid" type="number" label="CId">
-                <InputNumber />
-            </Form.Item>
-            <Form.Item name="countername" type="name" label="Counter Name">
-                <Input />
-            </Form.Item>
-            <Form.Item name="counterlocation" type="location" label="Counter Location">
-                <Input />
-            </Form.Item>
-            <Form.Item name="date" label="Entry Date" >
-                <DatePicker />
-            </Form.Item>
-            <Form.Item name="companyid" type="number" label="CompanyId">
-                <InputNumber />
-            </Form.Item>
+            }
+            return ''
+          })
+          console.log()
 
+          console.log("variable...", vari);
 
+        },
+
+        (error) => {
+
+        }
+      );
+  }, [])
 
 
-            <Form.Item label="IsActive" valuePropName="checked" >
-                <Switch />
-            </Form.Item>
-            <Form.Item >
-                <Button htmlType='submit'
-                    type='link'
-                    onClick={onFinish}
-                >Save</Button>
+  console.log("data", dataSource);
 
-            </Form.Item>
-        </Form>
-    );
-};
+  const onFormLayoutChange = ({ size }) => {
+    setComponentSize(size);
+  };
 
+
+  const onFinish = (values) => {
+    console.log(values);
+  };
+
+  let prevVal = {}
+  if (dataSource !== undefined) {
+    prevVal = {
+      ...dataSource,
+      EntryDate: moment(dataSource?.EntryDate)
+    }
+  }
+  console.log('asdasd', prevVal);
+
+  return (
+    <>
+
+      <Form
+        onFinish={onFinish}
+        labelCol={{
+          span: 4,
+        }}
+        wrapperCol={{
+          span: 14,
+        }}
+        layout="horizontal"
+        initialValues={prevVal}
+        onValuesChange={onFormLayoutChange}
+        size={componentSize}
+      >
+
+        <Form.Item name="CId" type="number" label="CId">
+          <InputNumber />
+        </Form.Item>
+        <Form.Item name="CounterName" type="name" label="Counter Name">
+          <Input />
+        </Form.Item>
+        <Form.Item name="CounterLocation" type="location" label="Counter Location">
+          <Input />
+        </Form.Item>
+        <Form.Item name="EntryDate" label="Entry Date" >
+          <DatePicker />
+        </Form.Item>
+        <Form.Item name="CompanyId" type="number" label="CompanyId">
+          <InputNumber />
+        </Form.Item>
+
+        <Form.Item label="IsActive" valuePropName="checked" >
+          <Switch />
+        </Form.Item>
+        <Form.Item >
+          <Button htmlType='submit'
+            type='link'
+            onClick={onFinish}
+          >Save</Button>
+
+        </Form.Item>
+      </Form>
+
+    </>
+  )
+}
 export default Counter;
+
 
 
 

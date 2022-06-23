@@ -8,6 +8,7 @@ import Vehicle from './component/Vehicle';
 import Post from './component/VehicleOwner';
 import Staff from './component/VehicleStaff';
 import Detail from './component/Details';
+import ChartDashboard from './pages/ChartDashboard';
 
 
 const App = () => {
@@ -17,7 +18,7 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/" element={<Design />} />
-
+          <Route path="/dashboard" element={<ChartDashboard />} />
 
           <Route path="/register" element={< Register />} />
           <Route path="/counter" element={< Counter />} />

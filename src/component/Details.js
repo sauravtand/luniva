@@ -51,6 +51,7 @@ const Detail = () => {
 
             <Form.Item name="date" label="Entry Date" >
                 <DatePicker />
+                moment.tz('2012-05-25', 'YYYY-MM-DD', true, "America/Toronto").isValid();
             </Form.Item>
 
             <Form.Item name="rdate" label="Route Date" >
